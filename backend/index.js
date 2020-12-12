@@ -17,7 +17,7 @@ mongoose.connect(
     process.env.MONGODB_CONNECTION_STRING, { useUnifiedTopology: true, useNewUrlParser: true },
     (err) => {
         if (err) {
-            console.log(err);
+            console.error(err);
             throw (err);
         }
         console.log("Connected to MongoDB");

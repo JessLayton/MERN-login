@@ -65,7 +65,6 @@ const Login = () => {
         console.error(error);
       }
       if (!loginResponse) {
-        console.log('FAIL');
         setUserData({
           isAuthed: false,
           user: undefined,

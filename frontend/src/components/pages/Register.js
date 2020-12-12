@@ -76,7 +76,6 @@ const Register = () => {
       console.error(error);
     }
     if (!loginResponse) {
-      console.log('FAIL');
       alert('Not logged in!!');
     }
       }
@@ -84,7 +83,6 @@ const Register = () => {
       console.error(error);
     }
     if (!registerResponse) {
-      console.log('FAIL');
       alert('Not registered!!');
     }
  

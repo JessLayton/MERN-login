@@ -2,12 +2,14 @@ import { post, get } from './databaseConnector';
 
 const getHeaders = () => {
   const token = localStorage.getItem("auth-token");
-  console.log("GET HEADERS!", token);
-  return {
-    headers: {
-      'x-auth-token': token,
-    },
+  if (token) {
+    return {
+      headers: {
+        'x-auth-token': token,
+      },
+    };
   }
+  return {};
 };
 
 const register = async (email, username, password, confirmPassword) => {
