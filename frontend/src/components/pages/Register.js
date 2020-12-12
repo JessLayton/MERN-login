@@ -1,15 +1,20 @@
+import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import {
   Card,
   Grid,
   makeStyles,
   Typography,
-  TextField,
   Button,
   Link,
 } from '@material-ui/core';
-import React from 'react';
+
+import UserContext from "../../context/userContext";
+import { register, login } from '../../connections/dataBaseService';
 import EmailField from '../form/EmailField';
 import PasswordField from '../form/PasswordField';
+import UsernameField from '../form/UsernameField';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -25,57 +30,105 @@ const useStyles = makeStyles(() => ({
 
 const Register = () => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+
+  const { setUserData } = useContext(UserContext);
+
+  // const validateForm = () => {
+  //   let invalidReasons = [];
+  //   let isValid = true;
+  //   if (password.length < 8) {
+  //     invalidReasons.push('Password must be at least 8 characters long.');
+  //     isValid = false;
+  //   } if (username.length < 5) {
+  //     invalidReasons.push('Username must be at least 5 characters long.');
+  //     isValid = false;
+  //   }  
+  //   return { valid: isValid, invalidReasons };
+  // };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // const formIsValid = validateForm();
+    // if (formIsValid.valid) {
+    let registerResponse;
+    try {
+      registerResponse = await register(email, username, password, confirmPassword);
+      if (registerResponse) {
+        let loginResponse;
+    try {
+      loginResponse = await login(email, password);
+      if (loginResponse) {
+        setUserData({
+          isAuthed: true,
+          user: loginResponse.data.user
+          });
+          localStorage.setItem("auth-token", loginResponse.data.token);
+        history.push('/home');
+        alert('Logged in')
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    if (!loginResponse) {
+      console.log('FAIL');
+      alert('Not logged in!!');
+    }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    if (!registerResponse) {
+      console.log('FAIL');
+      alert('Not registered!!');
+    }
+ 
+  };
 
   return (
-    <Grid container item justify='center' alignItems='center'>
+    <Grid container item justify="center" alignItems="center">
       <Card className={classes.card}>
-        <form>
-          <Grid container align='center' className={classes.form}>
-            <Grid
-              container
-              item
-              justify='center'
-              alignItems='center'
-            >
-              <Grid container spacing={2} direction='column'>
+        <form onSubmit={handleSubmit}>
+          <Grid container align="center" className={classes.form}>
+            <Grid container item justify="center" alignItems="center">
+              <Grid container spacing={2} direction="column">
                 <Grid item>
-                  <Typography variant='h3' component='h1'>
+                  <Typography variant="h3" component="h1">
                     Register
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <EmailField />
+                  <EmailField value={email} onChange={setEmail} />
                 </Grid>
                 <Grid item>
-                    <TextField
-                      fullWidth
-                      type='text'
-                      label='username'
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant='filled'
-                      required
-                      maxLength='25'
-                    />
+                  <UsernameField value={username} onChange={setUsername}/>                
                 </Grid>
                 <Grid item>
-                  <PasswordField label='password' />
+                  <PasswordField value={password} onChange={setPassword} label="Password" />
                 </Grid>
                 <Grid item>
-                  <PasswordField label='confirm password' />
+                  <PasswordField
+                    value={password}
+                    onChange={setConfirmPassword}
+                    label="Confirm Password"
+                  />
                 </Grid>
                 <Grid item>
-                  <Button variant='contained' color='primary'>
+                  <Button variant="contained" color="primary" type="submit">
                     Submit
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Typography variant='body1'>
+                  <Typography variant="body1">
                     Already have an account?{' '}
                   </Typography>
-                  <Typography variant='body1'>
-                    <Link href='/login'>Login here</Link>
+                  <Typography variant="body1">
+                    <Link href="/login">Login here</Link>
                   </Typography>
                 </Grid>
               </Grid>

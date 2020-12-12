@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Email is required field"]
     },
 password: { type: String, required: true, minlength: 8 },
-displayName: { type: String, maxLength: 25, minlength: 5 },
+username: { type: String, maxLength: 25, minlength: 5 },
 });
 
 module.exports = User = mongoose.model('user', userSchema);

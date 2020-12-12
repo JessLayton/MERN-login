@@ -5,37 +5,35 @@ const auth = require('../middleware/auth');
 const User = require('../models/user-model');
 
 router.post('/register', async (req, res) => {
+    console.log("HIT REG1")
     try {
-        let { email, password, passwordCheck, displayName } = req.body;
-
-        if (!email || !password || !passwordCheck)
+        let { email, password, confirmPassword, username } = req.body;
+        if (!email || !username || !password || !confirmPassword)
             return res.status(400).json({ msg: "Fields cannot be empty." });
-        
-            if (password.length < 8)
+        if (password.length < 8)
             return res.status(400)
                 .json({ msg: "The password needs to be at least 8 characters long." });
 
-        if (password !== passwordCheck)
+        if (password !== confirmPassword)
             return res
                 .status(400)
                 .json({ msg: "Passwords do not match." });
-        
         const existingUser = await User.findOne({ email: email });
         if (existingUser)
             return res
                 .status(400)
                 .json({ msg: "An account with this email already exists." });
-        
-        if (!displayName) displayName = email;
+
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
         const newUser = new User({
             email,
             password: passwordHash,
-            displayName,
+            username,
         });
+        console.log("newUser", newUser);
         const savedUser = await newUser.save();
-        res.json(savedUser);
+        return res.json(savedUser);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -44,24 +42,30 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        if (!email || !password)
+        console.log("loginDataaa!", email, password)
+        if (!email || !password) {
             return res.status(400).json({ msg: "Fields cannot be empty." });
+        }
         const user = await User.findOne({ email: email });
-        
-        if (!user)
-            return res
+        console.log("user", user);
+        if (!user) {
+             return res
                 .status(400)
                 .json({ msg: "No account with this email has been registered." });
+        }           
         const isMatch = await bcrypt.compare(password, user.password);
-        
-        if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        res.json({
+        console.log("ISMATCH", isMatch);
+        if (!isMatch) {
+            return res.status(400).json({ msg: "Invalid credentials." });
+            }
+        console.log("Before token")
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: 60 * 30 });
+        console.log("token", token)
+        return res.json({
             token,
             user: {
                 id: user._id,
-                displayName: user.displayName,
+                username: user.username,
             },
         });
     } catch (err) {
@@ -78,23 +82,36 @@ router.delete('/delete', auth, async (req, res) => {
     }
 });
 
-router.post('/tokenIsValid', auth, async (req, res) => {
+router.get('/tokenIsValid', async (req, res) => {
     try {
         const token = req.header('x-auth-token');
-        if (!token) return res.json(false);
+        if (!token) {
+            res.status(401);
+            console.log("no token");
+            return res.json(false);
+        }
+        console.log("Before")
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        if (!verified) return res.json(false);
+        if (!verified) {
+            res.status(401);
+            console.log("unverified token")
+            return res.json(false);
+        }
         const user = await User.findById(verified.id);
-        if (!user) return res.json(false);
-        return res.json(true);
+        if (!user) {
+            res.status(404);
+            return res.json(false);
+        } else {
+            return res.json(true);
+        }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 router.get('/', auth, async (req, res) => {
     const user = await User.findById(req.user);
-    res.json({
-        displayName: user.displayName,
+    return res.json({
+        username: user.username,
         id: user._id,
     });
 });

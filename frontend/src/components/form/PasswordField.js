@@ -6,14 +6,15 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
 
-const PasswordField = ({ label }) => {
+const PasswordField = ({ label, onChange }) => {
 
-    const [values, setValues] = React.useState({
+   const [values, setValues] = React.useState({
         password: '',
         showPassword: false,
     });
 
     const handleChange = (prop) => (event) => {
+        onChange(event.target.value);
         setValues({ ...values, [prop]: event.target.value });
     };
 

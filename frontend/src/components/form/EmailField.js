@@ -3,13 +3,20 @@ import EmailIcon from '@material-ui/icons/Email';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 
-const EmailField = () => {
+const EmailField = ({ value, onChange }) => {
+
+    const handleChange = (event) => {
+        onChange(event.target.value);
+      };
+
     return (
         <>
             <TextField
+                defaultValue={value}
+                onChange={handleChange}
                 fullWidth
                 type='email'
-                label='email'
+                label='Email'
                 InputLabelProps={{
                     shrink: true,
                 }}
