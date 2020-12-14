@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { checkToken } from './connections/dataBaseService';
 import PrivateRoute from './components/PrivateRoute';
 import UserContext from './context/userContext';
@@ -7,8 +8,10 @@ import Landing from './components/pages/Landing';
 import Home from './components/pages/Home';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
+import { Container } from '@material-ui/core';
 
-function App() {
+function App() {  
+  const [loading, isLoading] = useState(true);
   const [userData, setUserData] = useState({
     isAuthed: true,
     user: undefined,
@@ -28,7 +31,8 @@ function App() {
           user: undefined,
         });
         localStorage.setItem("auth-token", undefined);
-      }  
+      }
+      isLoading(false);
     };
     checkLoggedIn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,7 +40,12 @@ function App() {
 
   return (
     <>
-      <UserContext.Provider value={{ userData, setUserData }}>
+    {loading
+    ? ( <Container>
+        <CircularProgress/>
+        </Container>
+    )
+    : (<UserContext.Provider value={{ userData, setUserData }}>
         <Router>
           <Switch>
             <Route exact path='/'>
@@ -51,7 +60,8 @@ function App() {
               <PrivateRoute path='/home' component={Home} userData={userData} />
           </Switch>
         </Router>
-      </UserContext.Provider>
+      </UserContext.Provider>)
+    }
     </>
   );
 }
