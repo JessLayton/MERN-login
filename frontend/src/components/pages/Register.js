@@ -46,23 +46,29 @@ const Register = () => {
     try {
       registerResponse = await register(email, username, password, confirmPassword);
       if (registerResponse) {
-        let loginResponse;
-    try {
-      loginResponse = await login(email, password);
-      if (loginResponse) {
         setUserData({
           isAuthed: true,
-          user: loginResponse.data.user
+          user: registerResponse.data.user
           });
-          localStorage.setItem("auth-token", loginResponse.data.token);
-        history.push('/home');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    if (!loginResponse) {
-      SnackbarStore.showError('Failed to login'); 
-    }
+          localStorage.setItem("auth-token", registerResponse.data.token);
+        history.push('/');
+        // let loginResponse;
+    // try {
+    //   loginResponse = await login(username, password);
+    //   if (loginResponse) {
+    //     setUserData({
+    //       isAuthed: true,
+    //       user: loginResponse.data.user
+    //       });
+    //       localStorage.setItem("auth-token", loginResponse.data.token);
+    //     history.push('/');
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    // if (!loginResponse) {
+    //   SnackbarStore.showError('Failed to login'); 
+    // }
       }
     } catch (error) {
       console.error(error);

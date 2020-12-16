@@ -5,7 +5,6 @@ import { checkToken } from './connections/dataBaseService';
 import PrivateRoute from './components/PrivateRoute';
 import UserContext from './context/userContext';
 import Loading from './components/pages/Loading';
-import Landing from './components/pages/Landing';
 import Home from './components/pages/Home';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
@@ -32,7 +31,7 @@ function App() {
           isAuthed: false,
           user: undefined,
         });
-        localStorage.setItem("auth-token", undefined);
+        localStorage.removeItem("auth-token");
       }
       isLoading(false);
     };
@@ -50,16 +49,13 @@ function App() {
       : (<UserContext.Provider value={{ userData, setUserData }}>
           <Router>
             <Switch>
-              <Route exact path='/'>
-                <Landing />
-              </Route>          
+            <PrivateRoute exact path='/' component={Home} userData={userData} />            
               <Route path='/register'>
                 <Register />
               </Route>
               <Route path='/login'>
                 <Login />
-              </Route>
-                <PrivateRoute path='/home' component={Home} userData={userData} />
+              </Route>             
             </Switch>
           </Router>
         </UserContext.Provider>)

@@ -23,8 +23,8 @@ const register = async (email, username, password, confirmPassword) => {
   return response;
 };
 
-const login = async (email, password) => {
-  let loginData = { email, password };
+const login = async (username, password) => {
+  let loginData = { username, password };
   let response;
   try {
     response = await post('/users/login', loginData);
@@ -48,11 +48,13 @@ const getUsers = async (email, password) => {
 
 const checkToken = async () => {
   let response;
-  try {
-    response = await get('/users/tokenIsValid', getHeaders());
-  } catch (err) {
-    console.error(err);
-  }
+  if (localStorage.getItem('auth-token')) {
+    try {
+      response = await get('/users/tokenIsValid', getHeaders());
+    } catch (err) {
+      console.error(err);
+    }
+  }  
   return response;
 };
 

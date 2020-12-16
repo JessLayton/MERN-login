@@ -12,7 +12,7 @@ import {
 
 import UserContext from "../../context/userContext";
 import { login } from '../../connections/dataBaseService';
-import EmailField from '../form/EmailField';
+import UsernameField from '../form/UsernameField';
 import PasswordField from '../form/PasswordField';
 import SnackbarStore from '../snackbar/SnackbarStore';
 
@@ -32,7 +32,7 @@ const Login = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { setUserData } = useContext(UserContext);
@@ -51,7 +51,7 @@ const Login = () => {
     if (formIsValid.valid) {
       let loginResponse;
       try {
-        loginResponse = await login(email, password);
+        loginResponse = await login(username, password);
         if (loginResponse) {
           setUserData({
             isAuthed: true,
@@ -60,7 +60,7 @@ const Login = () => {
           
         }
         localStorage.setItem("auth-token", loginResponse.data.token);
-          history.push('/home');
+          history.push('/');
       } catch (error) {
         console.error(error);
       }
@@ -89,7 +89,7 @@ const Login = () => {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <EmailField value={email} onBlur={setEmail} />
+                  <UsernameField value={username} onBlur={setUsername} />
                 </Grid>
                 <Grid item>
                   <PasswordField value={password} onBlur={setPassword} label="Password" />

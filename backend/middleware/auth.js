@@ -21,7 +21,7 @@ const auth = async (req, res, next) => {
             const user = await User.findById(verified.id);
            if (user) {
             req.user = user.username;
-            next();
+            return next();
            }            
         }
         res.status(401).json({ msg: "Token verification failed" });
