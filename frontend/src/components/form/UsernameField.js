@@ -1,17 +1,30 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-const UsernameField = ({ value, onChange }) => {
+const UsernameField = ({ value, onBlur }) => {
+    const [error, setError] = React.useState(false);
 
     const handleChange = (event) => {
-        onChange(event.target.value);
+        onBlur(event.target.value);
+        handleValidate(event.target.value);
       };
+
+      const validate = (value) => value.length >= 5;
+
+      const handleValidate = (value) => {
+        if (validate(value)) {
+          setError(false);
+        }
+        else {
+          setError(true);
+        }    
+      }
 
     return (
         <>
             <TextField
                 defaultValue={value}
-                onChange={handleChange}
+                onBlur={handleChange}
                 fullWidth
                 type='text'
                 label='Username'
@@ -20,6 +33,9 @@ const UsernameField = ({ value, onChange }) => {
                 }}              
                 variant="filled"
                 required
+                error={error}
+                helperText={error ? 'Username must be at least 5 characters' : ''}
+                maxLength='25'
             />
             </>
     )

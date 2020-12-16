@@ -6,15 +6,27 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
 
-const PasswordField = ({ label, onChange }) => {
-
-   const [values, setValues] = React.useState({
+const PasswordField = ({ label, onBlur }) => {
+    const [error, setError] = React.useState(false)
+    
+    const [values, setValues] = React.useState({
         password: '',
         showPassword: false,
     });
 
+    const validate = (value) => value.length >= 8;
+
+    const handleValidate = (value) => {
+      if (validate(value)) {
+        setError(false);
+      }
+      else {
+        setError(true);
+      }    
+    }
+
     const handleChange = (prop) => (event) => {
-        onChange(event.target.value);
+        onBlur(event.target.value);
         setValues({ ...values, [prop]: event.target.value });
     };
 
@@ -33,6 +45,7 @@ const PasswordField = ({ label, onChange }) => {
                 type={values.showPassword ? 'text' : 'password'}
                 value={values.password}
                 onChange={handleChange('password')}
+                onBlur={(event) => {handleValidate(event.target.value)}}
                 label={label}
                 InputLabelProps={{
                     shrink: true,
@@ -40,12 +53,12 @@ const PasswordField = ({ label, onChange }) => {
                 InputProps={
                     {
                         endAdornment: (
-                            <InputAdornment position="end">
+                            <InputAdornment position='end'>
                                 <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label='toggle password visibility'
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
-                                edge="end"
+                                edge='end'
                                 >
                                     {values.showPassword ? <Visibility /> : <VisibilityOff />}                            
                                 </IconButton>
@@ -53,8 +66,10 @@ const PasswordField = ({ label, onChange }) => {
                         ),
                     }
                 }
-                variant="filled"
-               required
+                variant='filled'
+                required
+                error={error}
+                helperText={error ? 'Password must be greater than 8 characters' : ''}
             />
         </FormControl>
     )

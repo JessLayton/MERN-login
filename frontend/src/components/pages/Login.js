@@ -14,6 +14,7 @@ import UserContext from "../../context/userContext";
 import { login } from '../../connections/dataBaseService';
 import EmailField from '../form/EmailField';
 import PasswordField from '../form/PasswordField';
+import SnackbarStore from '../snackbar/SnackbarStore';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -60,7 +61,6 @@ const Login = () => {
         }
         localStorage.setItem("auth-token", loginResponse.data.token);
           history.push('/home');
-          alert('Logged in')
       } catch (error) {
         console.error(error);
       }
@@ -69,7 +69,7 @@ const Login = () => {
           isAuthed: false,
           user: undefined,
         });
-        alert('Not logged in!!');
+      SnackbarStore.showError('Incorrect username or password'); 
       }
     } else {
       alert(`${formIsValid.invalidReasons.join(' ')}`)
@@ -89,10 +89,10 @@ const Login = () => {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <EmailField value={email} onChange={setEmail} />
+                  <EmailField value={email} onBlur={setEmail} />
                 </Grid>
                 <Grid item>
-                  <PasswordField value={password} onChange={setPassword} label="Password" />
+                  <PasswordField value={password} onBlur={setPassword} label="Password" />
                 </Grid>
                 <Grid item>
                   <Button variant="contained" color="primary" type="submit">

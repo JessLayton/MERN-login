@@ -25,7 +25,7 @@ const auth = async (req, res, next) => {
             const user = await User.findById(verified.id);
             console.log(user)
            if (user) {
-            req.user = user.id;
+            req.user = user.username;
             next();
            }            
         }

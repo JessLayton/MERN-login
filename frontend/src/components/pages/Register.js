@@ -15,6 +15,7 @@ import { register, login } from '../../connections/dataBaseService';
 import EmailField from '../form/EmailField';
 import PasswordField from '../form/PasswordField';
 import UsernameField from '../form/UsernameField';
+import SnackbarStore from '../snackbar/SnackbarStore';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -39,23 +40,8 @@ const Register = () => {
 
   const { setUserData } = useContext(UserContext);
 
-  // const validateForm = () => {
-  //   let invalidReasons = [];
-  //   let isValid = true;
-  //   if (password.length < 8) {
-  //     invalidReasons.push('Password must be at least 8 characters long.');
-  //     isValid = false;
-  //   } if (username.length < 5) {
-  //     invalidReasons.push('Username must be at least 5 characters long.');
-  //     isValid = false;
-  //   }  
-  //   return { valid: isValid, invalidReasons };
-  // };
-
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    // const formIsValid = validateForm();
-    // if (formIsValid.valid) {
+    event.preventDefault();    
     let registerResponse;
     try {
       registerResponse = await register(email, username, password, confirmPassword);
@@ -76,14 +62,14 @@ const Register = () => {
       console.error(error);
     }
     if (!loginResponse) {
-      alert('Not logged in!!');
+      SnackbarStore.showError('Failed to login'); 
     }
       }
     } catch (error) {
       console.error(error);
     }
     if (!registerResponse) {
-      alert('Not registered!!');
+      alert('Please fill in all fields correctly');
     }
  
   };
@@ -101,18 +87,22 @@ const Register = () => {
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <EmailField value={email} onChange={setEmail} />
+                  <EmailField value={email} onBlur={setEmail} />
                 </Grid>
                 <Grid item>
-                  <UsernameField value={username} onChange={setUsername}/>                
+                  <UsernameField value={username} onBlur={setUsername}/>                
                 </Grid>
                 <Grid item>
-                  <PasswordField value={password} onChange={setPassword} label="Password" />
+                  <PasswordField 
+                    value={password} 
+                    onBlur={setPassword} 
+                    label="Password"
+                  />
                 </Grid>
                 <Grid item>
                   <PasswordField
                     value={password}
-                    onChange={setConfirmPassword}
+                    onBlur={setConfirmPassword}
                     label="Confirm Password"
                   />
                 </Grid>
