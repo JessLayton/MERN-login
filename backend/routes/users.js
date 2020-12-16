@@ -44,7 +44,6 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: "Fields cannot be empty." });
         }
         const user = await User.findOne({ email: email });
-        console.log("user", user);
         if (!user) {
              return res
                 .status(400)

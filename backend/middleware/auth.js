@@ -13,17 +13,12 @@ const verifyToken = (token) => {
 const auth = async (req, res, next) => {
     try {
         const token = req.header("x-auth-token");
-        console.log(token)
         if (!token) {
-            console.log('here')
             res.status(401).json({ msg: "No authentication token" });
         } 
         const verified = verifyToken(token);
-        console.log("verified");
-        console.log(verified);
         if (verified) {        
             const user = await User.findById(verified.id);
-            console.log(user)
            if (user) {
             req.user = user.username;
             next();

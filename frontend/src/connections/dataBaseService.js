@@ -17,7 +17,6 @@ const register = async (email, username, password, confirmPassword) => {
   let newUserData = { email, username, password, confirmPassword };
   try {
     response = await post('/users/register', newUserData);
-    console.log('reg response', response);
   } catch (err) {
     console.error(err);
   }
@@ -29,7 +28,6 @@ const login = async (email, password) => {
   let response;
   try {
     response = await post('/users/login', loginData);
-    console.log('login response', response);
 
   } catch (err) {
     console.error(err);

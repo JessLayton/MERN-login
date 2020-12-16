@@ -56,7 +56,6 @@ const Register = () => {
           });
           localStorage.setItem("auth-token", loginResponse.data.token);
         history.push('/home');
-        alert('Logged in')
       }
     } catch (error) {
       console.error(error);
@@ -69,7 +68,7 @@ const Register = () => {
       console.error(error);
     }
     if (!registerResponse) {
-      alert('Please fill in all fields correctly');
+      SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
     }
  
   };

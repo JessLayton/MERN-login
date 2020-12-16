@@ -72,7 +72,7 @@ const Login = () => {
       SnackbarStore.showError('Incorrect username or password'); 
       }
     } else {
-      alert(`${formIsValid.invalidReasons.join(' ')}`)
+      SnackbarStore.showError('Failed to login'); 
     }
   };
 
