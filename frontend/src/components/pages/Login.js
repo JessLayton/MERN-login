@@ -37,43 +37,28 @@ const Login = () => {
 
   const { setUserData } = useContext(UserContext);
 
-  const validateForm = () => {
-    let invalidReasons = [];
-    if (password.length < 8) {
-      invalidReasons.push('Password must be at least 8 characters long.')
-    }      
-    return { valid: invalidReasons.length === 0, invalidReasons };
-  };
-
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formIsValid = validateForm();
-    if (formIsValid.valid) {
-      let loginResponse;
-      try {
-        loginResponse = await login(username, password);
-        if (loginResponse) {
-          setUserData({
-            isAuthed: true,
-            user: loginResponse.data.user,
-          });
-          
-        }
-        localStorage.setItem("auth-token", loginResponse.data.token);
-          history.push('/');
-      } catch (error) {
-        console.error(error);
-      }
-      if (!loginResponse) {
+    event.preventDefault();    
+    let loginResponse;
+    try {
+      loginResponse = await login(username, password);
+      if (loginResponse && loginResponse.data) {
         setUserData({
-          isAuthed: false,
-          user: undefined,
+          isAuthed: true,
+          user: loginResponse.data.user,
         });
-      SnackbarStore.showError('Incorrect username or password'); 
+        localStorage.setItem("auth-token", loginResponse.data.token);
+        history.push('/');
+      } else {
+          setUserData({
+            isAuthed: false,
+            user: undefined,
+          });
+          SnackbarStore.showError('Incorrect username or password'); 
       }
-    } else {
+    } catch (error) {
       SnackbarStore.showError('Failed to login'); 
-    }
+    }     
   };
 
   return (
@@ -92,7 +77,7 @@ const Login = () => {
                   <UsernameField value={username} onBlur={setUsername} />
                 </Grid>
                 <Grid item>
-                  <PasswordField value={password} onBlur={setPassword} label="Password" />
+                  <PasswordField value={password} onBlur={setPassword} label="Password" validate={false} />
                 </Grid>
                 <Grid item>
                   <Button variant="contained" color="primary" type="submit">

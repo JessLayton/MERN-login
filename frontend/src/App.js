@@ -14,7 +14,7 @@ function App() {
 
   const [loading, isLoading] = useState(true);
   const [userData, setUserData] = useState({
-    isAuthed: true,
+    isAuthed: false,
     user: undefined,
   });
 

@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import UserContext from "../../context/userContext";
-import { register, login } from '../../connections/dataBaseService';
+import { register } from '../../connections/dataBaseService';
 import EmailField from '../form/EmailField';
 import PasswordField from '../form/PasswordField';
 import UsernameField from '../form/UsernameField';
@@ -40,43 +40,37 @@ const Register = () => {
 
   const { setUserData } = useContext(UserContext);
 
+  const validate = () => {
+    let valid = true;
+    if (password.length < 8 || password !== confirmPassword || username.length < 5) {
+      valid = false;
+    }       
+    return valid;
+  };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();    
-    let registerResponse;
-    try {
-      registerResponse = await register(email, username, password, confirmPassword);
-      if (registerResponse) {
-        setUserData({
-          isAuthed: true,
-          user: registerResponse.data.user
-          });
-          localStorage.setItem("auth-token", registerResponse.data.token);
-        history.push('/');
-        // let loginResponse;
-    // try {
-    //   loginResponse = await login(username, password);
-    //   if (loginResponse) {
-    //     setUserData({
-    //       isAuthed: true,
-    //       user: loginResponse.data.user
-    //       });
-    //       localStorage.setItem("auth-token", loginResponse.data.token);
-    //     history.push('/');
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    // if (!loginResponse) {
-    //   SnackbarStore.showError('Failed to login'); 
-    // }
+    event.preventDefault(); 
+    let isValid = validate();   
+    if (isValid) {
+      let registerResponse;
+      try {
+        registerResponse = await register(email, username, password, confirmPassword);
+        if (registerResponse && registerResponse.data) {
+          setUserData({
+            isAuthed: true,
+            user: registerResponse.data.user
+            });
+            localStorage.setItem("auth-token", registerResponse.data.token);
+          history.push('/');       
+        } else {
+          SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
+        }
+      } catch (error) {
+        SnackbarStore.showError('Failed to register'); 
       }
-    } catch (error) {
-      console.error(error);
-    }
-    if (!registerResponse) {
-      SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
-    }
- 
+    } else {
+        SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
+    } 
   };
 
   return (
@@ -102,13 +96,15 @@ const Register = () => {
                     value={password} 
                     onBlur={setPassword} 
                     label="Password"
+                    validate={true}
                   />
                 </Grid>
                 <Grid item>
                   <PasswordField
-                    value={password}
+                    value={confirmPassword}
                     onBlur={setConfirmPassword}
                     label="Confirm Password"
+                    validate={true}
                   />
                 </Grid>
                 <Grid item>

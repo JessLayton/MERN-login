@@ -9,6 +9,7 @@ class store {
     makeObservable(this, {
       open: observable,
       message: observable,
+      variant: observable,
       showError: action,
       showSuccess: action,
       closeCurrentMessage: action,
