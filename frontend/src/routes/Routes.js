@@ -16,9 +16,7 @@ const Routes = ({ userData }) => {
       </Route>
       <Route path='/login'>
         <Login />
-      </Route>    
-      <Route path='/no'>
-      </Route>          
+      </Route>        
     </Switch>
   </Router>
     )   
