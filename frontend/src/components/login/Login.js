@@ -12,8 +12,8 @@ import {
 
 import UserContext from "../../context/userContext";
 import { login } from '../../connections/dataBaseService';
-import UsernameField from '../form/UsernameField';
-import PasswordField from '../form/PasswordField';
+import UsernameField from './UsernameLoginField';
+import PasswordField from './PasswordLoginField';
 import SnackbarStore from '../snackbar/SnackbarStore';
 
 const useStyles = makeStyles(() => ({

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Button from '@material-ui/core/Button';
-import UserContext from "../../context/userContext";
+import UserContext from "../../../context/userContext";
 
 const LogoutButton = () => {
     const { setUserData } = useContext(UserContext);

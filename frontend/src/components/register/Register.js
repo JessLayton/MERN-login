@@ -12,9 +12,9 @@ import {
 
 import UserContext from "../../context/userContext";
 import { register } from '../../connections/dataBaseService';
-import EmailField from '../form/EmailField';
-import PasswordField from '../form/PasswordField';
-import UsernameField from '../form/UsernameField';
+import EmailField from './EmailField';
+import PasswordField from './PasswordRegField';
+import UsernameField from './UsernameRegField';
 import SnackbarStore from '../snackbar/SnackbarStore';
 
 const useStyles = makeStyles(() => ({
