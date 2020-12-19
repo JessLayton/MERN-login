@@ -26,3 +26,4 @@ mongoose.connect(
 mongoose.set('useCreateIndex', true);
 
 app.use('/users', require('./routes/users'));
+// app.use('/mail', require('./routes/mail'));

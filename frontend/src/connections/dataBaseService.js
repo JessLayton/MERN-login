@@ -58,4 +58,14 @@ const checkToken = async () => {
   return response;
 };
 
-export { register, login, getUsers, checkToken };
+const sendResetEmail = async (email) => {
+  let response;
+  try {
+    response = await post('/users/reset', { email });
+  } catch(err) {
+    console.error(err)
+  }
+  return response;
+}
+
+export { register, login, getUsers, checkToken, sendResetEmail };

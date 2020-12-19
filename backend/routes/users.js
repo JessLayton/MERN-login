@@ -2,6 +2,9 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+const sendMail = require('./mail');
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport'); // this is important
 const User = require('../models/user-model');
 
 router.post('/register', async (req, res) => {
@@ -80,6 +83,31 @@ router.get('/tokenIsValid', auth, async (req, res) => {
        return res.status(200).json({ user: req.user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/reset', async (req, res) => {
+    try {
+        const { email } = req.body;
+        console.log("body", req.body);
+        if (!email) {
+            return res.status(400).json({ msg: "Fields cannot be empty." });
+        }
+        const emailExists = await User.findOne({ email: email });
+        if (emailExists) {
+            console.log("HIT")
+            sendMail(email);
+            return res.status(200).json({ email: "email sent" });
+
+        } else {
+            return res
+            .status(400)
+            .json({ msg: "No account with this email has been registered." });
+        }
+        
+    } catch (err) {
+        console.error(err)
         res.status(500).json({ error: err.message });
     }
 });

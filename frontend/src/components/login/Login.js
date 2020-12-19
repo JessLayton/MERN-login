@@ -92,6 +92,14 @@ const Login = () => {
                     <Link href="/register">Register here</Link>
                   </Typography>
                 </Grid>
+                <Grid item>
+                  <Typography variant="body1">
+                    Forgotten username or password?
+                  </Typography>
+                  <Typography variant="body1">
+                    <Link href="/reset">Reset here</Link>
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

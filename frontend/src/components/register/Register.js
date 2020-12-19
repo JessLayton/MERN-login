@@ -12,7 +12,7 @@ import {
 
 import UserContext from "../../context/userContext";
 import { register } from '../../connections/dataBaseService';
-import EmailField from './EmailField';
+import EmailField from './EmailRegField';
 import PasswordField from './PasswordRegField';
 import UsernameField from './UsernameRegField';
 import SnackbarStore from '../snackbar/SnackbarStore';

@@ -5,6 +5,7 @@ import PrivateRoute from './PrivateRoute';
 import Home from '../components/home/Home';
 import Register from '../components/register/Register';
 import Login from '../components/login/Login';
+import Reset from '../components/reset/Reset';
 
 const Routes = ({ userData }) => {
     return (
@@ -16,6 +17,9 @@ const Routes = ({ userData }) => {
       </Route>
       <Route path='/login'>
         <Login />
+      </Route> 
+      <Route path='/reset'>
+        <Reset />
       </Route>        
     </Switch>
   </Router>
