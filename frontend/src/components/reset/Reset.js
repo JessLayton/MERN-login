@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import EmailField from './EmailField';
 import SnackbarStore from '../snackbar/SnackbarStore';
@@ -28,29 +27,40 @@ import {
   }));
   
 const Reset = () => {
-    const history = useHistory();
     const classes = useStyles();
     
+    const [resetEmailSent, setResetEmailSent] = React.useState(false);
     const [email, setEmail] = React.useState('');
+
+const sendEmail = async () => {
+  let emailResponse;
+  try {
+      emailResponse = await sendResetEmail(email);
+      if (emailResponse) {
+          setResetEmailSent(true);
+          SnackbarStore.showSuccess('Email sent'); 
+      }
+  } catch(err) {
+      console.error(err);
+      SnackbarStore.showError('Failed to send'); 
+  }
+}
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        let emailResponse;
-        try {
-            emailResponse = await sendResetEmail(email);
-            if (emailResponse) {
-                history.push("/login");
-            }
-        } catch(err) {
-            console.error(err);
-            SnackbarStore.showError('Failed to register'); 
-        }
+        sendEmail();
       };
+
+      const handleClick = () => {
+        sendEmail();   
+      }
 
     return (
         <Grid container item justify="center" alignItems="center">
         <Card className={classes.card}>
-          <form onSubmit={handleSubmit}>
+          {!resetEmailSent
+          ? (
+            <form onSubmit={handleSubmit}>
             <Grid container align="center" className={classes.form}>
               <Grid container item justify="center" alignItems="center">
                 <Grid container spacing={2} direction="column">
@@ -79,6 +89,33 @@ const Reset = () => {
               </Grid>
             </Grid>
           </form>
+          )
+          : (
+            <Grid container align="center" className={classes.content}>
+            <Grid container item justify="center" alignItems="center">
+              <Grid container spacing={2} direction="column">
+                <Grid item>
+                  <Typography variant="h6" component="h1">
+                    An email has been sent to reset your password
+                  </Typography>                   
+                </Grid>                       
+                <Grid item>
+                  <Button variant="contained" color="primary" onClick={handleClick}>
+                    Resend email
+                  </Button>
+                </Grid>
+                <Grid item>                   
+                  <Typography variant="body1">
+                    <Link href="/login">Return to login</Link>
+                  </Typography>
+                </Grid>                
+              </Grid>
+            </Grid>
+          </Grid>
+          )          
+          
+          }
+       
         </Card>
       </Grid>
     )
