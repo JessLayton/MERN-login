@@ -6,6 +6,7 @@ import Home from '../components/home/Home';
 import Register from '../components/register/Register';
 import Login from '../components/login/Login';
 import Reset from '../components/reset/Reset';
+import PasswordReset from '../components/reset/PasswordReset'
 
 const Routes = ({ userData }) => {
   return (
@@ -21,7 +22,8 @@ const Routes = ({ userData }) => {
         <Route path='/reset'>
           <Reset />
         </Route>
-        <Route path='/resetPassword'>
+        <Route path='/passwordReset/:uuid'>
+          <PasswordReset/>
         </Route>       
       </Switch>
     </Router>

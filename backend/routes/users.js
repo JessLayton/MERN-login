@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const sendMail = require('./mail');
-const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport'); // this is important
 const User = require('../models/user-model');
 
 router.post('/register', async (req, res) => {

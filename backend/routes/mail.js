@@ -1,6 +1,6 @@
-const router = require('express').Router();
 const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport'); // this is important
+const smtpTransport = require('nodemailer-smtp-transport');
+const { v4: uuidv4 } = require('uuid');
 
 let transport = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
@@ -14,6 +14,8 @@ let transport = nodemailer.createTransport(smtpTransport({
     } 
   }));
 
+let uuid = uuidv4(); 
+
   const mailOptions = (email) => ({
     from: process.env.NODEMAILER_USER,
     to: email,        
@@ -22,11 +24,10 @@ let transport = nodemailer.createTransport(smtpTransport({
     html: 
         `<body>
             <p>Hello </p>
-            <a href=http://localhost:3000/resetPassword/$>Click here to reset password</a>
+            <a href=http://localhost:3000/passwordReset/${uuid}>Click here to reset password</a>
         </body>`    
 });
 
-// router.get('/sendResetMail', async (req, res) => {
 const sendMail = (email) => {
     try {
         console.log('sending email..');
