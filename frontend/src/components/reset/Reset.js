@@ -30,21 +30,23 @@ const Reset = () => {
     const classes = useStyles();
     
     const [resetEmailSent, setResetEmailSent] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
     const [email, setEmail] = React.useState('');
 
-const sendEmail = async () => {
-  let emailResponse;
-  try {
-      emailResponse = await sendResetEmail(email);
-      if (emailResponse) {
-          setResetEmailSent(true);
-          SnackbarStore.showSuccess('Email sent'); 
+    const sendEmail = async () => {
+      let emailResponse;
+      try {
+          emailResponse = await sendResetEmail(email);
+          if (emailResponse) {
+              setResetEmailSent(true);
+              setButtonDisabled(true);
+            SnackbarStore.showSuccess('Email sent'); 
+        }
+      } catch(err) {
+          console.error(err);
+          SnackbarStore.showError('Failed to send'); 
       }
-  } catch(err) {
-      console.error(err);
-      SnackbarStore.showError('Failed to send'); 
-  }
-}
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -54,6 +56,8 @@ const sendEmail = async () => {
       const handleClick = () => {
         sendEmail();   
       }
+
+    setTimeout(() => setButtonDisabled(false), 30000)
 
     return (
         <Grid container item justify="center" alignItems="center">
@@ -100,7 +104,7 @@ const sendEmail = async () => {
                   </Typography>                   
                 </Grid>                       
                 <Grid item>
-                  <Button variant="contained" color="primary" onClick={handleClick}>
+                  <Button variant="contained" color="primary" onClick={handleClick} disabled={buttonDisabled}>
                     Resend email
                   </Button>
                 </Grid>
@@ -112,10 +116,8 @@ const sendEmail = async () => {
               </Grid>
             </Grid>
           </Grid>
-          )          
-          
-          }
-       
+          )                    
+          }       
         </Card>
       </Grid>
     )

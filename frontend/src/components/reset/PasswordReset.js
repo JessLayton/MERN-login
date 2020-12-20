@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import {
   Card,
@@ -28,7 +27,6 @@ const useStyles = makeStyles(() => ({
 
 const PasswordReset = () => {
   const classes = useStyles();
-  const history = useHistory();
 
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
