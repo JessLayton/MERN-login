@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
 
 import {
   Card,
@@ -9,6 +10,7 @@ import {
   Link,
 } from '@material-ui/core';
 
+import { resetPassword } from '../../connections/dataBaseService';
 import UserContext from "../../context/userContext";
 import PasswordField from '../register/PasswordRegField';
 import SnackbarStore from '../snackbar/SnackbarStore';
@@ -41,12 +43,26 @@ const PasswordReset = () => {
     return valid;
   };
 
+  const uuid =  useParams();
+
+
   const handleSubmit = async (event) => {
     event.preventDefault(); 
-    let isValid = validate();   
+    let isValid = validate(); 
     if (isValid) {
       let resetResponse;
-     
+      try {
+        console.log(uuid)       
+        resetResponse = await resetPassword(password, uuid);
+        console.log(resetResponse);
+        if (resetResponse) {
+          alert("RESET RESPONSE!!");
+        } else {
+          SnackbarStore.showError('Failed to reset'); 
+        }
+      } catch (error) {
+        SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
+      }     
     } else {
         SnackbarStore.showError('Failed to reset password'); 
     } 

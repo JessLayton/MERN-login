@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 const sendMail = require('./mail');
 const User = require('../models/user-model');
+const { v4: uuidv4 } = require('uuid');
 
 router.post('/register', async (req, res) => {
     try {
@@ -85,17 +86,25 @@ router.get('/tokenIsValid', auth, async (req, res) => {
     }
 });
 
-router.post('/reset', async (req, res) => {
+let uuid = uuidv4(); 
+
+router.post('/sendResetEmail', async (req, res) => {
     try {
         const { email } = req.body;
-        console.log("body", req.body);
+      
         if (!email) {
             return res.status(400).json({ msg: "Fields cannot be empty." });
         }
         const emailExists = await User.findOne({ email: email });
         if (emailExists) {
             console.log("HIT")
-            sendMail(email);
+            User.updateOne({ email: email }, { $set: { resetPassLink: uuid }}, (error) => {
+                if (error) {
+                    return res.status(400).json({ err: error });
+                } else {
+                    sendMail(email, uuid);
+                }
+            })
             return res.status(200).json({ email: "email sent" });
 
         } else {
@@ -104,6 +113,34 @@ router.post('/reset', async (req, res) => {
             .json({ msg: "No account with this email has been registered." });
         }
         
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/resetPassword', async (req, res) => {
+    try {
+        const { password, uuid } = req.body;
+        console.log(password, uuid);
+       
+        if (!password || !uuid) {
+            return res.status(400).json({ msg: "Fields cannot be empty." });
+        }
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+        const resetLinkExists = await User.findOne({ resetPassLink: urlUuid });
+        if (resetLinkExists) {
+            console.log("EXISTS")
+            User.updateOne({resetPassLink}, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
+                if (error) {
+                    console.log("HIT ERROR")
+                    return res.status(400).json({ err: error });
+                } 
+            })
+        } else {
+            return res.status(400).json({ msg: "No reset link!" });
+        }        
     } catch (err) {
         console.error(err)
         res.status(500).json({ error: err.message });

@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
-const { v4: uuidv4 } = require('uuid');
 
 let transport = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
@@ -14,9 +13,7 @@ let transport = nodemailer.createTransport(smtpTransport({
     } 
   }));
 
-let uuid = uuidv4(); 
-
-  const mailOptions = (email) => ({
+  const mailOptions = (email, uuid) => ({
     from: process.env.NODEMAILER_USER,
     to: email,        
     subject: 'Reset login details', 
@@ -28,10 +25,10 @@ let uuid = uuidv4();
         </body>`    
 });
 
-const sendMail = (email) => {
+const sendMail = (email, uuid) => {
     try {
         console.log('sending email..');
-        transport.sendMail(mailOptions(email));
+        transport.sendMail(mailOptions(email, uuid));
         console.log('EMAIL SENT..');
     } catch (err) {
         console.error("FAILED TO SEND")
