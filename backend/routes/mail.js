@@ -27,9 +27,7 @@ let transport = nodemailer.createTransport(smtpTransport({
 
 const sendMail = (email, uuid) => {
     try {
-        console.log('sending email..');
         transport.sendMail(mailOptions(email, uuid));
-        console.log('EMAIL SENT..');
     } catch (err) {
         console.error("FAILED TO SEND")
     }

@@ -32,6 +32,7 @@ const PasswordReset = () => {
 
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [PasswordReset, setPasswordReset] = React.useState(false);
 
   const { setUserData } = useContext(UserContext);
 
@@ -51,12 +52,10 @@ const PasswordReset = () => {
     if (isValid) {
       let resetResponse;
       try {
-        console.log("BEFORE RESET")
         resetResponse = await resetPassword(password, uuid);
-        console.log("RESET")
         if (resetResponse) {
-          console.log("RESET RESPONSE")
-          SnackbarStore.showSuccess('RESET!'); 
+          setPasswordReset(true);
+          SnackbarStore.showSuccess('Password successfully reset'); 
         } else {
           SnackbarStore.showError('Failed to reset'); 
         }
@@ -71,7 +70,9 @@ const PasswordReset = () => {
   return (
     <Grid container item justify="center" alignItems="center">
       <Card className={classes.card}>
-        <form onSubmit={handleSubmit}>
+        {!PasswordReset
+        ? (
+          <form onSubmit={handleSubmit}>
           <Grid container align="center" className={classes.form}>
             <Grid container item justify="center" alignItems="center">
               <Grid container spacing={2} direction="column">
@@ -110,6 +111,26 @@ const PasswordReset = () => {
             </Grid>
           </Grid>
         </form>
+        ) : (
+          <Grid container align="center" className={classes.content}>
+          <Grid container item justify="center" alignItems="center">
+            <Grid container spacing={2} direction="column">
+              <Grid item>
+                <Typography variant="h6" component="h1">
+                  Your password has been reset
+                </Typography>                   
+              </Grid>                       
+              <Grid item>
+              <Typography variant="body1">
+                    <Link href="/login">Return to login</Link>
+                  </Typography>
+              </Grid>                   
+            </Grid>
+          </Grid>
+        </Grid>
+        )
+        }
+       
       </Card>
     </Grid>
   );
