@@ -127,10 +127,9 @@ router.put('/resetPassword', async (req, res) => {
         }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
-        const urlUuid = uuid.uuid;
-        const resetLinkExists = await User.findOne({ resetPassLink: urlUuid });
+        const resetLinkExists = await User.findOne({ resetPassLink: uuid });
         if (resetLinkExists) {
-            User.updateOne({ resetPassLink: urlUuid }, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
+            User.updateOne({ resetPassLink: uuid }, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
                 if (error) {
                     return res.status(400).json({ err: error });
                 } 

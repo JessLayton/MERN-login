@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 
 import { resetPassword } from '../../connections/dataBaseService';
-import UserContext from "../../context/userContext";
 import PasswordField from '../register/PasswordRegField';
 import SnackbarStore from '../snackbar/SnackbarStore';
 
@@ -34,8 +33,6 @@ const PasswordReset = () => {
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [PasswordReset, setPasswordReset] = React.useState(false);
 
-  const { setUserData } = useContext(UserContext);
-
   const validate = () => {
     let valid = true;
     if (password.length < 8 || password !== confirmPassword) {
@@ -44,7 +41,7 @@ const PasswordReset = () => {
     return valid;
   };
 
-  const uuid =  useParams();
+  const params =  useParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault(); 
@@ -52,8 +49,9 @@ const PasswordReset = () => {
     if (isValid) {
       let resetResponse;
       try {
+        const uuid = params.uuid;
         resetResponse = await resetPassword(password, uuid);
-        if (resetResponse) {
+        if (resetResponse && resetResponse.data ) {
           setPasswordReset(true);
           SnackbarStore.showSuccess('Password successfully reset'); 
         } else {
