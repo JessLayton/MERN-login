@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
-const sendMail = require('./mail');
+const sendMail = require('../utils/mail');
 const User = require('../models/user-model');
 const { v4: uuidv4 } = require('uuid');
 
