@@ -45,18 +45,18 @@ const PasswordReset = () => {
 
   const uuid =  useParams();
 
-
   const handleSubmit = async (event) => {
     event.preventDefault(); 
     let isValid = validate(); 
     if (isValid) {
       let resetResponse;
       try {
-        console.log(uuid)       
+        console.log("BEFORE RESET")
         resetResponse = await resetPassword(password, uuid);
-        console.log(resetResponse);
+        console.log("RESET")
         if (resetResponse) {
-          alert("RESET RESPONSE!!");
+          console.log("RESET RESPONSE")
+          SnackbarStore.showSuccess('RESET!'); 
         } else {
           SnackbarStore.showError('Failed to reset'); 
         }

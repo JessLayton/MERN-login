@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     },
 password: { type: String, required: true, minlength: 8 },
 username: { type: String, maxLength: 25, minlength: 5 },
-resetPassLink: { type: String, required: false }
-});
+resetPassLink: { required: false }
+}
+);
 
 module.exports = User = mongoose.model('user', userSchema);

@@ -122,21 +122,24 @@ router.post('/sendResetEmail', async (req, res) => {
 router.put('/resetPassword', async (req, res) => {
     try {
         const { password, uuid } = req.body;
-        console.log(password, uuid);
        
         if (!password || !uuid) {
             return res.status(400).json({ msg: "Fields cannot be empty." });
         }
+        console.log("password-------", password);
+        console.log("uuid type-----", uuid.uuid);
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
+        const urlUuid = uuid.uuid;
         const resetLinkExists = await User.findOne({ resetPassLink: urlUuid });
         if (resetLinkExists) {
             console.log("EXISTS")
-            User.updateOne({resetPassLink}, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
+            User.updateOne({ resetPassLink: urlUuid }, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
                 if (error) {
                     console.log("HIT ERROR")
                     return res.status(400).json({ err: error });
                 } 
+                return res.status(200).json({ msg: "Password reset"})
             })
         } else {
             return res.status(400).json({ msg: "No reset link!" });

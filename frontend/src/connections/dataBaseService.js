@@ -68,11 +68,11 @@ const sendResetEmail = async (email) => {
   return response;
 }
 
-const resetPassword = async (password) => {
+const resetPassword = async (password, uuid) => {
   let response;
   try {
     console.log("1")
-    response = await put('/users/resetPassword', { password });
+    response = await put('/users/resetPassword', { password, uuid });
     console.log("5")
   } catch(err) {
     console.log("6")
