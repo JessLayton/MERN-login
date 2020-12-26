@@ -5,7 +5,7 @@ import PrivateRoute from './PrivateRoute';
 import Home from '../components/home/Home';
 import Register from '../components/register/Register';
 import Login from '../components/login/Login';
-import Reset from '../components/reset/Reset';
+import Reset from '../components/reset/ResetRequest';
 import PasswordReset from '../components/reset/PasswordReset'
 
 const Routes = ({ userData }) => {

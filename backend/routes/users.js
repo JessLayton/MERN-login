@@ -97,7 +97,7 @@ router.post('/sendResetEmail', async (req, res) => {
         if (emailExists) {
             const username = emailExists.username;
             const currentDateTime = new Date().getTime();
-            const uuid = uuidv4(); 
+            const uuid = uuidv4();
             console.log(currentDateTime);
             User.updateOne({ email: email }, { $set: { resetPassLink: uuid, resetRequestTimeStamp: currentDateTime }}, (error) => {
                 if (error) {
