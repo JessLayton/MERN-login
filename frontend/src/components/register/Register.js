@@ -40,11 +40,12 @@ const Register = () => {
 
   const { setUserData } = useContext(UserContext);
 
-  const validate = () => {
+   const validate = () => {
     let valid = true;
     if (password.length < 8 || password !== confirmPassword || username.length < 5) {
       valid = false;
     }       
+    if (password)
     return valid;
   };
 

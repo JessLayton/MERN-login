@@ -97,11 +97,12 @@ router.post('/sendResetEmail', async (req, res) => {
         }
         const emailExists = await User.findOne({ email: email });
         if (emailExists) {
+            const username = emailExists.username;
             User.updateOne({ email: email }, { $set: { resetPassLink: uuid }}, (error) => {
                 if (error) {
                     return res.status(400).json({ err: error });
                 } else {
-                    sendMail(email, uuid);
+                    sendMail(email, username, uuid);
                 }
             })
             return res.status(200).json({ email: "email sent" });

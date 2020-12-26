@@ -20,10 +20,13 @@ import {
       paddingLeft: '5%',
       paddingRight: '5%',
     },
-    form: {
+    content: {
       marginTop: '20px',
       marginBottom: '30px',
     },
+    button: {
+      width: '240px'
+    }
   }));
   
 const Reset = () => {
@@ -31,6 +34,7 @@ const Reset = () => {
     
     const [resetEmailSent, setResetEmailSent] = React.useState(false);
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [counter, setCounter] = React.useState(30);
     const [email, setEmail] = React.useState('');
 
     const sendEmail = async () => {
@@ -40,24 +44,34 @@ const Reset = () => {
           if (emailResponse) {
               setResetEmailSent(true);
               setButtonDisabled(true);
-            SnackbarStore.showSuccess('Email sent'); 
+            SnackbarStore.showSuccess('Email sent');             
+        } else {
+          SnackbarStore.showError('Failed to send email'); 
         }
       } catch(err) {
           console.error(err);
-          SnackbarStore.showError('Failed to send'); 
+          SnackbarStore.showError('Failed to send email'); 
       }
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         sendEmail();
+        setTimeout(() => setButtonDisabled(false), 30000);
       };
 
-      const handleClick = () => {
-        sendEmail();   
-      }
+    
+      React.useEffect(() => {
+        if (buttonDisabled) {
+          counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+        };
+      })
 
-    setTimeout(() => setButtonDisabled(false), 30000)
+      const handleClick = () => {
+        sendEmail();
+        setTimeout(() => setButtonDisabled(false), 30000);
+        setCounter(30);
+      }  
 
     return (
         <Grid container item justify="center" alignItems="center">
@@ -65,7 +79,7 @@ const Reset = () => {
           {!resetEmailSent
           ? (
             <form onSubmit={handleSubmit}>
-            <Grid container align="center" className={classes.form}>
+            <Grid container align="center" className={classes.content}>
               <Grid container item justify="center" alignItems="center">
                 <Grid container spacing={2} direction="column">
                   <Grid item>
@@ -80,7 +94,7 @@ const Reset = () => {
                     <EmailField value={email} onBlur={setEmail} />
                   </Grid>                 
                   <Grid item>
-                    <Button variant="contained" color="primary" type="submit">
+                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
                       Submit
                     </Button>
                   </Grid>
@@ -95,7 +109,7 @@ const Reset = () => {
           </form>
           )
           : (
-            <Grid container align="center" className={classes.content}>
+           <Grid container align="center" className={classes.content}>
             <Grid container item justify="center" alignItems="center">
               <Grid container spacing={2} direction="column">
                 <Grid item>
@@ -104,9 +118,18 @@ const Reset = () => {
                   </Typography>                   
                 </Grid>                       
                 <Grid item>
-                  <Button variant="contained" color="primary" onClick={handleClick} disabled={buttonDisabled}>
+                  {buttonDisabled
+                  ? (
+                    <Button variant="contained" color="primary" onClick={handleClick} disabled={buttonDisabled} className={classes.button}>
+                    Resend in {counter} seconds
+                  </Button>
+                  ) :
+                  (
+                    <Button variant="contained" color="primary" onClick={handleClick} className={classes.button}>
                     Resend email
                   </Button>
+                  )}
+                 
                 </Grid>
                 <Grid item>                   
                   <Typography variant="body1">

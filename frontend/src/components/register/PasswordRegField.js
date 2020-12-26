@@ -14,7 +14,9 @@ const PasswordField = ({ label, onBlur }) => {
         showPassword: false,
     });
 
-    const validate = (value) => value.length >= 8;
+    const passwordCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    
+    const validate = (value) => passwordCheck.test(value);
 
     const handleValidate = (value) => {
       if (validate(value)) {
@@ -69,7 +71,7 @@ const PasswordField = ({ label, onBlur }) => {
                 variant='filled'
                 required
                 error={error}
-                helperText={error ? 'Password must be greater than 8 characters' : ''}
+                helperText={error ? 'Choose a more secure password' : ''}
             />
         </FormControl>
     )
