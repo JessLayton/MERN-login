@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
     paddingLeft: '5%',
     paddingRight: '5%',
   },
-  form: {
+  content: {
     marginTop: '20px',
     marginBottom: '30px',
   },
@@ -71,7 +71,7 @@ const PasswordReset = () => {
         {!PasswordReset
         ? (
           <form onSubmit={handleSubmit}>
-          <Grid container align="center" className={classes.form}>
+          <Grid container align="center" className={classes.content}>
             <Grid container item justify="center" alignItems="center">
               <Grid container spacing={2} direction="column">
                 <Grid item>

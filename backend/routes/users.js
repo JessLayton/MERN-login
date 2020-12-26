@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
-const sendMail = require('../utils/mail');
+const sendResetEmail = require('../utils/sendResetEmail');
 const User = require('../models/user-model');
 const { v4: uuidv4 } = require('uuid');
 
@@ -86,8 +86,6 @@ router.get('/tokenIsValid', auth, async (req, res) => {
     }
 });
 
-let uuid = uuidv4(); 
-
 router.post('/sendResetEmail', async (req, res) => {
     try {
         const { email } = req.body;
@@ -98,19 +96,19 @@ router.post('/sendResetEmail', async (req, res) => {
         const emailExists = await User.findOne({ email: email });
         if (emailExists) {
             const username = emailExists.username;
-            User.updateOne({ email: email }, { $set: { resetPassLink: uuid }}, (error) => {
+            const currentDateTime = new Date().getTime();
+            const uuid = uuidv4(); 
+            console.log(currentDateTime);
+            User.updateOne({ email: email }, { $set: { resetPassLink: uuid, resetRequestTimeStamp: currentDateTime }}, (error) => {
                 if (error) {
                     return res.status(400).json({ err: error });
                 } else {
-                    sendMail(email, username, uuid);
+                    sendResetEmail(email, username, uuid);
                 }
             })
             return res.status(200).json({ email: "email sent" });
-
         } else {
-            return res
-            .status(400)
-            .json({ msg: "No account with this email has been registered." });
+            return res.status(200).json({ email: "email sent" });
         }
         
     } catch (err) {

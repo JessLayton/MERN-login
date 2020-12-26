@@ -23,7 +23,8 @@ password: { type: String, required: true, minlength: 8,
         message: props => `${props.value} is not a valid password!`
     }},
 username: { type: String, maxLength: 25, minlength: 5 },
-resetPassLink: { required: false }
+resetPassLink: { required: false },
+resetRequestTimeStamp: { required: false }
 }
 );
 

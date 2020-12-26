@@ -94,7 +94,7 @@ const Reset = () => {
                     <EmailField value={email} onBlur={setEmail} />
                   </Grid>                 
                   <Grid item>
-                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                    <Button variant="contained" color="primary" type="submit">
                       Submit
                     </Button>
                   </Grid>
@@ -114,10 +114,13 @@ const Reset = () => {
               <Grid container spacing={2} direction="column">
                 <Grid item>
                   <Typography variant="h6" component="h1">
-                    An email has been sent to reset your password
-                  </Typography>                   
+                    An email has been sent to
+                  </Typography>    
+                  <Typography variant="h6" component="h1">
+                    {email}
+                  </Typography>                
                 </Grid>                       
-                <Grid item>
+                <Grid item>               
                   {buttonDisabled
                   ? (
                     <Button variant="contained" color="primary" onClick={handleClick} disabled={buttonDisabled} className={classes.button}>
@@ -131,7 +134,10 @@ const Reset = () => {
                   )}
                  
                 </Grid>
-                <Grid item>                   
+                <Grid item>       
+                <Typography variant="body1" component="h1">
+                    Didn't receive an email? Check your email is correct
+                  </Typography>              
                   <Typography variant="body1">
                     <Link href="/login">Return to login</Link>
                   </Typography>

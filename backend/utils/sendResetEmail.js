@@ -37,7 +37,7 @@ let transport = nodemailer.createTransport(smtpTransport({
         </body>`    
 });
 
-const sendMail = (email, username, uuid) => {
+const sendResetEmail = (email, username, uuid) => {
     try {
         transport.sendMail(mailOptions(email, username, uuid));
     } catch (err) {
@@ -45,4 +45,4 @@ const sendMail = (email, username, uuid) => {
     }
 }   
 
-module.exports = sendMail;
+module.exports = sendResetEmail;
