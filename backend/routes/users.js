@@ -96,10 +96,9 @@ router.post('/sendResetEmail', async (req, res) => {
         const emailExists = await User.findOne({ email: email });
         if (emailExists) {
             const username = emailExists.username;
-            const currentDateTime = new Date().getTime();
+            let resetExpiryTime = new Date().getTime() + 300000;
             const uuid = uuidv4();
-            console.log(currentDateTime);
-            User.updateOne({ email: email }, { $set: { resetPassLink: uuid, resetRequestTimeStamp: currentDateTime }}, (error) => {
+            User.updateOne({ email: email }, { $set: { resetPassLink: uuid, resetRequestExpiryTime: resetExpiryTime }}, (error) => {
                 if (error) {
                     return res.status(400).json({ err: error });
                 } else {
@@ -108,7 +107,7 @@ router.post('/sendResetEmail', async (req, res) => {
             })
             return res.status(200).json({ email: "email sent" });
         } else {
-            return res.status(200).json({ email: "email sent" });
+            return res.status(200).json({ email: "email not sent" });
         }
         
     } catch (err) {
@@ -119,21 +118,28 @@ router.post('/sendResetEmail', async (req, res) => {
 
 router.put('/resetPassword', async (req, res) => {
     try {
-        const { password, uuid } = req.body;
-       
+        const { password, uuid } = req.body;       
         if (!password || !uuid) {
             return res.status(400).json({ msg: "Fields cannot be empty." });
         }
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
         const resetLinkExists = await User.findOne({ resetPassLink: uuid });
+      
+        const currentTime = new Date().getTime();
         if (resetLinkExists) {
-            User.updateOne({ resetPassLink: uuid }, { $set: { password: passwordHash, resetPassLink: '' }}, (error) => {
-                if (error) {
-                    return res.status(400).json({ err: error });
-                } 
-                return res.status(200).json({ msg: "Password reset"})
-            })
+            const resetExpiryTime = resetLinkExists.resetRequestExpiryTime;
+            if (resetExpiryTime > currentTime) {
+                User.updateOne({ resetPassLink: uuid }, { $set: { password: passwordHash, resetPassLink: '', resetRequestExpiryTime: '' }}, (error) => {
+                    if (error) {
+                        return res.status(400).json({ error: error });
+                    } 
+                    return res.status(200).json({ msg: "Password reset"})
+                })
+            } else {
+                return res.status(400).json({ msg: "Reset link expired" })
+            }
+            
         } else {
             return res.status(400).json({ msg: "No reset link!" });
         }        

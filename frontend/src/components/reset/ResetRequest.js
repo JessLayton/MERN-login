@@ -58,20 +58,16 @@ const Reset = () => {
         event.preventDefault();
         sendEmail();
         setTimeout(() => setButtonDisabled(false), 30000);
-      };
-
-    
-      React.useEffect(() => {
-        if (buttonDisabled) {
-          counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-        };
-      })
-
-      const handleClick = () => {
-        sendEmail();
-        setTimeout(() => setButtonDisabled(false), 30000);
         setCounter(30);
-      }  
+      };
+    
+    React.useEffect(() => {
+      if (buttonDisabled) {
+        counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+      } else {
+        setCounter(30);
+      };
+    }, [counter, buttonDisabled])
 
     return (
         <Grid container item justify="center" alignItems="center">
@@ -120,19 +116,10 @@ const Reset = () => {
                     {email}
                   </Typography>                
                 </Grid>                       
-                <Grid item>               
-                  {buttonDisabled
-                  ? (
-                    <Button variant="contained" color="primary" onClick={handleClick} disabled={buttonDisabled} className={classes.button}>
-                    Resend in {counter} seconds
+                <Grid item>
+                    <Button variant="contained" color="primary" onClick={handleSubmit} disabled={buttonDisabled} className={classes.button}>
+                    {buttonDisabled ? `Resend in ${counter} seconds` : 'Resend email'}
                   </Button>
-                  ) :
-                  (
-                    <Button variant="contained" color="primary" onClick={handleClick} className={classes.button}>
-                    Resend email
-                  </Button>
-                  )}
-                 
                 </Grid>
                 <Grid item>       
                 <Typography variant="body1" component="h1">

@@ -24,7 +24,7 @@ password: { type: String, required: true, minlength: 8,
     }},
 username: { type: String, maxLength: 25, minlength: 5 },
 resetPassLink: { required: false },
-resetRequestTimeStamp: { required: false }
+resetRequestExpiryTime: { required: false }
 }
 );
 
