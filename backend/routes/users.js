@@ -5,14 +5,17 @@ const auth = require('../middleware/auth');
 const sendResetEmail = require('../utils/sendResetEmail');
 const User = require('../models/user-model');
 const { v4: uuidv4 } = require('uuid');
+const isAdmin = require('../middleware/roles');
+
+const passwordCheck = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 router.post('/register', async (req, res) => {
     try {
         let { email, password, confirmPassword, username } = req.body;
         if (!email || !username || !password || !confirmPassword) {
             res.status(400).json({ msg: "Fields cannot be empty." });
-        } if (password.length < 8) {
-            res.status(400).json({ msg: "The password needs to be at least 8 characters long." });
+        } if (!passwordCheck.test(password)) {
+            res.status(400).json({ msg: "The password does not meet the criteria." });
         } if (password !== confirmPassword) {
             res.status(400).json({ msg: "Passwords do not match." });
         }
@@ -148,5 +151,18 @@ router.put('/resetPassword', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+router.get('/allUsers', auth, isAdmin, async (req, res) => {
+    try {
+        User.find({}, 'username', (err, users) => {
+                console.log(users)
+                res.status(200).json({ users: users })
+            })
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ err: error })
+    }
+})
 
 module.exports = router;
