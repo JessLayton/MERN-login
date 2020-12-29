@@ -22,4 +22,14 @@ const get = async (path, headers = {}) => {
   return response;
 };
 
-export { post, get };
+const put = async (path, body, headers) => {
+  let response;
+  try {
+    response = await Axios.put(getLocation(path), body);
+  } catch (err) {
+    console.error(err);
+  }
+  return response;
+}
+
+export { post, get, put };

@@ -1,4 +1,4 @@
-import { post, get } from './databaseConnector';
+import { post, get, put } from './databaseConnector';
 
 const getHeaders = () => {
   const token = localStorage.getItem("auth-token");
@@ -35,16 +35,6 @@ const login = async (username, password) => {
   return response;
 };
 
-const getUsers = async (email, password) => {
-  let loginData = { email, password };
-  let response;
-  try {
-    response = await get('/users', loginData);
-  } catch (err) {
-    console.error(err);
-  }
-  return response;
-};
 
 const checkToken = async () => {
   let response;
@@ -58,4 +48,36 @@ const checkToken = async () => {
   return response;
 };
 
-export { register, login, getUsers, checkToken };
+const sendResetEmail = async (email) => {
+  let response;
+  try {
+    response = await post('/users/sendResetEmail', { email });
+  } catch(err) {
+    console.error(err)
+  }
+  return response;
+}
+
+const resetPassword = async (password, uuid) => {
+  let response;
+  try {
+    response = await put('/users/resetPassword', { password, uuid });
+  } catch(err) {
+    console.error(err)
+  }
+  return response;
+}
+
+const getUsers = async () => {  
+  let response;
+  if (localStorage.getItem('auth-token')) {
+    try {
+      response = await get('/users/allUsers', getHeaders());
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  return response;
+};
+
+export { register, login, getUsers, checkToken, sendResetEmail, resetPassword };

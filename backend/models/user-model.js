@@ -6,15 +6,18 @@ const userSchema = new mongoose.Schema({
     email: { 
         type: String, unique: true, 
         validate: {
-            validator: function(isEmail) {
+            validator: (isEmail) => {
                 return emailCheck.test(isEmail);
             },
             message: props => `${props.value} is not a valid email!`
         },
         required: [true, "Email is required field"]
     },
-password: { type: String, required: true, minlength: 8 },
-username: { type: String, maxLength: 25, minlength: 5 },
+    password: { type: String, required: true, minlength: 8 },
+    username: { type: String, maxLength: 25, minlength: 5 },
+    role: { default: "user", type: String },
+    resetPassLink: { required: false },
+    resetRequestExpiryTime: { required: false }
 });
 
 module.exports = User = mongoose.model('user', userSchema);

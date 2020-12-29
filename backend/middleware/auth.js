@@ -21,6 +21,7 @@ const auth = async (req, res, next) => {
             const user = await User.findById(verified.id);
            if (user) {
             req.user = user.username;
+            req.role = user.role;
             return next();
            }            
         }
@@ -30,7 +31,5 @@ const auth = async (req, res, next) => {
         res.status(500).json({ error: err.message });
     }
 }
-
-
 
 module.exports = auth;

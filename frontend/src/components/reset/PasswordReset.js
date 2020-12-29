@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import {
   Card,
@@ -10,11 +10,8 @@ import {
   Link,
 } from '@material-ui/core';
 
-import UserContext from "../../context/userContext";
-import { register } from '../../connections/dataBaseService';
-import EmailField from './EmailRegField';
-import PasswordField from './PasswordRegField';
-import UsernameField from './UsernameRegField';
+import { resetPassword } from '../../connections/dataBaseService';
+import PasswordField from '../register/PasswordRegField';
 import SnackbarStore from '../snackbar/SnackbarStore';
 
 const useStyles = makeStyles(() => ({
@@ -23,75 +20,65 @@ const useStyles = makeStyles(() => ({
     paddingLeft: '5%',
     paddingRight: '5%',
   },
-  form: {
+  content: {
     marginTop: '20px',
     marginBottom: '30px',
   },
 }));
 
-const Register = () => {
+const PasswordReset = () => {
   const classes = useStyles();
-  const history = useHistory();
 
-  const [email, setEmail] = React.useState('');
-  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [PasswordReset, setPasswordReset] = React.useState(false);
 
-  const { setUserData } = useContext(UserContext);
-
-   const validate = () => {
+  const validate = () => {
     let valid = true;
-    if (password.length < 8 || password !== confirmPassword || username.length < 5) {
+    if (password.length < 8 || password !== confirmPassword) {
       valid = false;
     }       
-    if (password)
     return valid;
   };
 
+  const params =  useParams();
+
   const handleSubmit = async (event) => {
     event.preventDefault(); 
-    let isValid = validate();   
+    let isValid = validate(); 
     if (isValid) {
-      let registerResponse;
+      let resetResponse;
       try {
-        registerResponse = await register(email, username, password, confirmPassword);
-        if (registerResponse && registerResponse.data) {
-          setUserData({
-            isAuthed: true,
-            user: registerResponse.data.user
-            });
-            localStorage.setItem("auth-token", registerResponse.data.token);
-          history.push('/');       
+        const uuid = params.uuid;
+        resetResponse = await resetPassword(password, uuid);
+        if (resetResponse && resetResponse.data ) {
+          setPasswordReset(true);
+          SnackbarStore.showSuccess('Password successfully reset'); 
         } else {
-          SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
+          SnackbarStore.showError('Failed to reset'); 
         }
       } catch (error) {
-        SnackbarStore.showError('Failed to register'); 
-      }
-    } else {
         SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
+      }     
+    } else {
+        SnackbarStore.showError('Failed to reset password'); 
     } 
   };
 
   return (
     <Grid container item justify="center" alignItems="center">
       <Card className={classes.card}>
-        <form onSubmit={handleSubmit}>
-          <Grid container align="center" className={classes.form}>
+        {!PasswordReset
+        ? (
+          <form onSubmit={handleSubmit}>
+          <Grid container align="center" className={classes.content}>
             <Grid container item justify="center" alignItems="center">
               <Grid container spacing={2} direction="column">
                 <Grid item>
                   <Typography variant="h3" component="h1">
-                    Register
+                    Reset Password
                   </Typography>
-                </Grid>
-                <Grid item>
-                  <EmailField value={email} onBlur={setEmail} />
-                </Grid>
-                <Grid item>
-                  <UsernameField value={username} onBlur={setUsername}/>                
-                </Grid>
+                </Grid>                
                 <Grid item>
                   <PasswordField 
                     value={password} 
@@ -113,21 +100,38 @@ const Register = () => {
                     Submit
                   </Button>
                 </Grid>
-                <Grid item>
+                <Grid item>                  
                   <Typography variant="body1">
-                    Already have an account?{' '}
-                  </Typography>
-                  <Typography variant="body1">
-                    <Link href="/login">Login here</Link>
+                    <Link href="/login">Return to login</Link>
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </form>
+        ) : (
+          <Grid container align="center" className={classes.content}>
+          <Grid container item justify="center" alignItems="center">
+            <Grid container spacing={2} direction="column">
+              <Grid item>
+                <Typography variant="h6" component="h1">
+                  Your password has been reset
+                </Typography>                   
+              </Grid>                       
+              <Grid item>
+              <Typography variant="body1">
+                    <Link href="/login">Return to login</Link>
+                  </Typography>
+              </Grid>                   
+            </Grid>
+          </Grid>
+        </Grid>
+        )
+        }
+       
       </Card>
     </Grid>
   );
 };
 
-export default Register;
+export default PasswordReset;
