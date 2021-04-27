@@ -1,28 +1,54 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
+import PropTypes from 'prop-types';
 
-const UsernameField = ({ value, onBlur }) => {
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Person from '@material-ui/icons/Person';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  icon: {
+    margin: '6px',
+  },
+});
+
+const UsernameField = ({ value, onValueChange }) => {
+  const classes = useStyles();
   const handleChange = (event) => {
-    onBlur(event.target.value);
-  };     
+    onValueChange(event.target.value);
+  };
 
   return (
-    <>
     <TextField
-      defaultValue={value}
-      onBlur={handleChange}
+      value={value}
+      onChange={handleChange}
       fullWidth
       type='text'
       label='Username'
       InputLabelProps={{
-          shrink: true,
-      }}              
-      variant="filled"
+        shrink: true,
+      }}
+      InputProps={
+        {
+          endAdornment: (
+            <InputAdornment position='end'>
+              <Person
+                className={classes.icon}
+              />
+            </InputAdornment>
+          ),
+        }
+    }
+      variant='filled'
       required
       maxLength='25'
     />
-</>
-    )
-}
+  );
+};
+
+UsernameField.propTypes = {
+  value: PropTypes.string.isRequired,
+  onValueChange: PropTypes.func.isRequired,
+};
 
 export default UsernameField;

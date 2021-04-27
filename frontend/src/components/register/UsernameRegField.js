@@ -1,44 +1,69 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Person from '@material-ui/icons/Person';
+import { makeStyles } from '@material-ui/core';
 
-const UsernameField = ({ value, onBlur }) => {
-    const [error, setError] = React.useState(false);
+const useStyles = makeStyles({
+  icon: {
+    margin: '6px',
+  },
+});
 
-    const handleChange = (event) => {
-        onBlur(event.target.value);
-        handleValidate(event.target.value);
-      };
+const UsernameField = ({ value, onValueChange }) => {
+  const classes = useStyles();
 
-      const validate = (value) => value.length >= 5;
+  const [error, setError] = React.useState(false);
 
-      const handleValidate = (value) => {
-        if (validate(value)) {
-          setError(false);
+  const validate = (username) => username.length >= 5;
+
+  const handleValidate = (event) => {
+    if (validate(event.target.value)) {
+      setError(false);
+    } else {
+      setError(true);
+    }
+  };
+
+  const handleChange = (event) => {
+    onValueChange(event.target.value);
+  };
+
+  return (
+    <TextField
+      value={value}
+      onBlur={handleValidate}
+      onChange={handleChange}
+      fullWidth
+      type='text'
+      label='Username'
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={
+          {
+            endAdornment: (
+              <InputAdornment position='end'>
+                <Person
+                  className={classes.icon}
+                />
+              </InputAdornment>
+            ),
+          }
         }
-        else {
-          setError(true);
-        }    
-      }
+      variant='filled'
+      required
+      error={error}
+      helperText={error ? 'Username must be at least 5 characters' : ''}
+      maxLength='25'
+    />
+  );
+};
 
-    return (
-        <>
-            <TextField
-                defaultValue={value}
-                onBlur={handleChange}
-                fullWidth
-                type='text'
-                label='Username'
-                InputLabelProps={{
-                    shrink: true,
-                }}              
-                variant="filled"
-                required
-                error={error}
-                helperText={error ? 'Username must be at least 5 characters' : ''}
-                maxLength='25'
-            />
-            </>
-    )
-}
+UsernameField.propTypes = {
+  value: PropTypes.string.isRequired,
+  onValueChange: PropTypes.func.isRequired,
+};
 
 export default UsernameField;

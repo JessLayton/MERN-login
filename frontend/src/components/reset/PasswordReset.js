@@ -31,104 +31,103 @@ const PasswordReset = () => {
 
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [PasswordReset, setPasswordReset] = React.useState(false);
+  const [passwordReset, setPasswordReset] = React.useState(false);
 
   const validate = () => {
     let valid = true;
     if (password.length < 8 || password !== confirmPassword) {
       valid = false;
-    }       
+    }
     return valid;
   };
 
-  const params =  useParams();
+  const params = useParams();
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); 
-    let isValid = validate(); 
+    event.preventDefault();
+    const isValid = validate();
     if (isValid) {
       let resetResponse;
       try {
-        const uuid = params.uuid;
+        const { uuid } = params;
         resetResponse = await resetPassword(password, uuid);
-        if (resetResponse && resetResponse.data ) {
+        if (resetResponse && resetResponse.data) {
           setPasswordReset(true);
-          SnackbarStore.showSuccess('Password successfully reset'); 
+          SnackbarStore.showSuccess('Password successfully reset');
         } else {
-          SnackbarStore.showError('Failed to reset'); 
+          SnackbarStore.showError('Failed to reset');
         }
       } catch (error) {
-        SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
-      }     
+        SnackbarStore.showError('Failed to register - please fill in all fields correctly');
+      }
     } else {
-        SnackbarStore.showError('Failed to reset password'); 
-    } 
+      SnackbarStore.showError('Failed to reset password');
+    }
   };
 
   return (
-    <Grid container item justify="center" alignItems="center">
+    <Grid container item justify='center' alignItems='center'>
       <Card className={classes.card}>
-        {!PasswordReset
-        ? (
-          <form onSubmit={handleSubmit}>
-          <Grid container align="center" className={classes.content}>
-            <Grid container item justify="center" alignItems="center">
-              <Grid container spacing={2} direction="column">
-                <Grid item>
-                  <Typography variant="h3" component="h1">
-                    Reset Password
-                  </Typography>
-                </Grid>                
-                <Grid item>
-                  <PasswordField 
-                    value={password} 
-                    onBlur={setPassword} 
-                    label="Password"
-                    validate={true}
-                  />
+        {!passwordReset
+          ? (
+            <form onSubmit={handleSubmit}>
+              <Grid container align='center' className={classes.content}>
+                <Grid container item justify='center' alignItems='center'>
+                  <Grid container spacing={2} direction='column'>
+                    <Grid item>
+                      <Typography variant='h3' component='h1'>
+                        Reset Password
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <PasswordField
+                        value={password}
+                        onBlur={setPassword}
+                        label='Password'
+                        validate
+                      />
+                    </Grid>
+                    <Grid item>
+                      <PasswordField
+                        value={confirmPassword}
+                        onBlur={setConfirmPassword}
+                        label='Confirm Password'
+                        validate
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Button variant='contained' color='primary' type='submit'>
+                        Submit
+                      </Button>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant='body1'>
+                        <Link href='/login'>Return to login</Link>
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <PasswordField
-                    value={confirmPassword}
-                    onBlur={setConfirmPassword}
-                    label="Confirm Password"
-                    validate={true}
-                  />
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
-                    Submit
-                  </Button>
-                </Grid>
-                <Grid item>                  
-                  <Typography variant="body1">
-                    <Link href="/login">Return to login</Link>
-                  </Typography>
+              </Grid>
+            </form>
+          ) : (
+            <Grid container align='center' className={classes.content}>
+              <Grid container item justify='center' alignItems='center'>
+                <Grid container spacing={2} direction='column'>
+                  <Grid item>
+                    <Typography variant='h6' component='h1'>
+                      Your password has been reset
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant='body1'>
+                      <Link href='/login'>Return to login</Link>
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </form>
-        ) : (
-          <Grid container align="center" className={classes.content}>
-          <Grid container item justify="center" alignItems="center">
-            <Grid container spacing={2} direction="column">
-              <Grid item>
-                <Typography variant="h6" component="h1">
-                  Your password has been reset
-                </Typography>                   
-              </Grid>                       
-              <Grid item>
-              <Typography variant="body1">
-                    <Link href="/login">Return to login</Link>
-                  </Typography>
-              </Grid>                   
-            </Grid>
-          </Grid>
-        </Grid>
-        )
-        }
-       
+          )}
+
       </Card>
     </Grid>
   );

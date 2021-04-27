@@ -10,7 +10,7 @@ import {
   Link,
 } from '@material-ui/core';
 
-import UserContext from "../../context/userContext";
+import UserContext from '../../context/userContext';
 import { register } from '../../connections/dataBaseService';
 import EmailField from './EmailRegField';
 import PasswordField from './PasswordRegField';
@@ -40,85 +40,72 @@ const Register = () => {
 
   const { setUserData } = useContext(UserContext);
 
-   const validate = () => {
-    let valid = true;
-    if (password.length < 8 || password !== confirmPassword || username.length < 5) {
-      valid = false;
-    }       
-    if (password)
-    return valid;
-  };
-
   const handleSubmit = async (event) => {
-    event.preventDefault(); 
-    let isValid = validate();   
-    if (isValid) {
-      let registerResponse;
-      try {
-        registerResponse = await register(email, username, password, confirmPassword);
-        if (registerResponse && registerResponse.data) {
-          setUserData({
-            isAuthed: true,
-            user: registerResponse.data.user
-            });
-            localStorage.setItem("auth-token", registerResponse.data.token);
-          history.push('/');       
-        } else {
-          SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
-        }
-      } catch (error) {
-        SnackbarStore.showError('Failed to register'); 
+    event.preventDefault();
+    let registerResponse;
+    try {
+      registerResponse = await register(email, username, password, confirmPassword);
+      if (registerResponse && registerResponse.data) {
+        setUserData({
+          isAuthed: true,
+          user: registerResponse.data.user,
+        });
+        localStorage.setItem('auth-token', registerResponse.data.token);
+        history.push('/');
+      } else {
+        SnackbarStore.showError('Failed to register - please fill in all fields correctly');
       }
-    } else {
-        SnackbarStore.showError('Failed to register - please fill in all fields correctly'); 
-    } 
+    } catch (error) {
+      SnackbarStore.showError('Failed to register');
+    }
   };
 
   return (
-    <Grid container item justify="center" alignItems="center">
+    <Grid container item justify='center' alignItems='center'>
       <Card className={classes.card}>
         <form onSubmit={handleSubmit}>
-          <Grid container align="center" className={classes.form}>
-            <Grid container item justify="center" alignItems="center">
-              <Grid container spacing={2} direction="column">
+          <Grid container align='center' className={classes.form}>
+            <Grid container item justify='center' alignItems='center'>
+              <Grid container spacing={2} direction='column'>
                 <Grid item>
-                  <Typography variant="h3" component="h1">
+                  <Typography variant='h3' component='h1'>
                     Register
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <EmailField value={email} onBlur={setEmail} />
+                  <EmailField value={email} onValueChange={setEmail} />
                 </Grid>
                 <Grid item>
-                  <UsernameField value={username} onBlur={setUsername}/>                
+                  <UsernameField value={username} onValueChange={setUsername} />
                 </Grid>
                 <Grid item>
-                  <PasswordField 
-                    value={password} 
-                    onBlur={setPassword} 
-                    label="Password"
-                    validate={true}
+                  <PasswordField
+                    value={password}
+                    onValueChange={setPassword}
+                    label='Password'
+                    validate
                   />
                 </Grid>
                 <Grid item>
                   <PasswordField
                     value={confirmPassword}
-                    onBlur={setConfirmPassword}
-                    label="Confirm Password"
-                    validate={true}
+                    onValueChange={setConfirmPassword}
+                    label='Confirm Password'
+                    validate
                   />
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button variant='contained' color='primary' type='submit'>
                     Submit
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Typography variant="body1">
-                    Already have an account?{' '}
+                  <Typography variant='body1'>
+                    Already have an account?
+                    {' '}
                   </Typography>
-                  <Typography variant="body1">
-                    <Link href="/login">Login here</Link>
+                  <Typography variant='body1'>
+                    <Link href='/login'>Login here</Link>
                   </Typography>
                 </Grid>
               </Grid>
