@@ -6,8 +6,7 @@ import UserContext from './context/userContext';
 import Loading from './components/Loading';
 import Snackbar from './components/snackbar/Snackbar';
 
-function App() {  
-
+function App() {
   const [loading, isLoading] = useState(true);
   const [userData, setUserData] = useState({
     isAuthed: false,
@@ -27,25 +26,25 @@ function App() {
           isAuthed: false,
           user: undefined,
         });
-        localStorage.removeItem("auth-token");
+        localStorage.removeItem('auth-token');
       }
       isLoading(false);
     };
     checkLoggedIn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  }, []);
 
   return (
     <>
       <Snackbar />
       {loading
-      ? ( 
-        <Loading />
-      )
-      : (<UserContext.Provider value={{ userData, setUserData }}>
-          <Routes userData={userData} />
-        </UserContext.Provider>)
-      }
+        ? (
+          <Loading />
+        )
+        : (
+          <UserContext.Provider value={{ userData, setUserData }}>
+            <Routes userData={userData} />
+          </UserContext.Provider>
+        )}
     </>
   );
 }

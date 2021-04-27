@@ -22,7 +22,7 @@ const get = async (path, headers = {}) => {
   return response;
 };
 
-const put = async (path, body, headers) => {
+const put = async (path, body) => {
   let response;
   try {
     response = await Axios.put(getLocation(path), body);

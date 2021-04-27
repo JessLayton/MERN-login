@@ -10,7 +10,7 @@ import {
   Link,
 } from '@material-ui/core';
 
-import UserContext from "../../context/userContext";
+import UserContext from '../../context/userContext';
 import { login } from '../../connections/dataBaseService';
 import UsernameField from './UsernameLoginField';
 import PasswordField from './PasswordLoginField';
@@ -38,7 +38,7 @@ const Login = () => {
   const { setUserData } = useContext(UserContext);
 
   const handleSubmit = async (event) => {
-    event.preventDefault();    
+    event.preventDefault();
     let loginResponse;
     try {
       loginResponse = await login(username, password);
@@ -47,57 +47,57 @@ const Login = () => {
           isAuthed: true,
           user: loginResponse.data.user,
         });
-        localStorage.setItem("auth-token", loginResponse.data.token);
+        localStorage.setItem('auth-token', loginResponse.data.token);
         history.push('/');
       } else {
-          setUserData({
-            isAuthed: false,
-            user: undefined,
-          });
-          SnackbarStore.showError('Incorrect username or password'); 
+        setUserData({
+          isAuthed: false,
+          user: undefined,
+        });
+        SnackbarStore.showError('Incorrect username or password');
       }
     } catch (error) {
-      SnackbarStore.showError('Failed to login'); 
-    }     
+      SnackbarStore.showError('Failed to login');
+    }
   };
 
   return (
-    <Grid container item justify="center" alignItems="center">
+    <Grid container item justify='center' alignItems='center'>
       <Card className={classes.card}>
         <form onSubmit={handleSubmit}>
-          <Grid container align="center" className={classes.form}>
-            <Grid container item justify="center" alignItems="center">
-              <Grid container spacing={2} direction="column">
+          <Grid container align='center' className={classes.form}>
+            <Grid container item justify='center' alignItems='center'>
+              <Grid container spacing={2} direction='column'>
                 <Grid item>
-                  <Typography variant="h3" component="h1">
+                  <Typography variant='h3' component='h1'>
                     Login
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <UsernameField value={username} onBlur={setUsername} />
+                  <UsernameField value={username} onValueChange={setUsername} />
                 </Grid>
                 <Grid item>
-                  <PasswordField value={password} onBlur={setPassword} label="Password" validate={false} />
+                  <PasswordField value={password} onValueChange={setPassword} label='Password' validate={false} />
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button variant='contained' color='primary' type='submit'>
                     Submit
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Typography variant="body1">
-                    Don't have an account?
+                  <Typography variant='body1'>
+                    Don&apos;t have an account?
                   </Typography>
-                  <Typography variant="body1">
-                    <Link href="/register">Register here</Link>
+                  <Typography variant='body1'>
+                    <Link href='/register'>Register here</Link>
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <Typography variant="body1">
+                  <Typography variant='body1'>
                     Forgotten username or password?
                   </Typography>
-                  <Typography variant="body1">
-                    <Link href="/reset">Reset here</Link>
+                  <Typography variant='body1'>
+                    <Link href='/reset'>Reset here</Link>
                   </Typography>
                 </Grid>
               </Grid>

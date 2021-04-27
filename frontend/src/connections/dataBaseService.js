@@ -1,7 +1,7 @@
 import { post, get, put } from './databaseConnector';
 
 const getHeaders = () => {
-  const token = localStorage.getItem("auth-token");
+  const token = localStorage.getItem('auth-token');
   if (token) {
     return {
       headers: {
@@ -14,7 +14,9 @@ const getHeaders = () => {
 
 const register = async (email, username, password, confirmPassword) => {
   let response;
-  let newUserData = { email, username, password, confirmPassword };
+  const newUserData = {
+    email, username, password, confirmPassword,
+  };
   try {
     response = await post('/users/register', newUserData);
   } catch (err) {
@@ -24,17 +26,15 @@ const register = async (email, username, password, confirmPassword) => {
 };
 
 const login = async (username, password) => {
-  let loginData = { username, password };
+  const loginData = { username, password };
   let response;
   try {
     response = await post('/users/login', loginData);
-
   } catch (err) {
     console.error(err);
   }
   return response;
 };
-
 
 const checkToken = async () => {
   let response;
@@ -44,7 +44,7 @@ const checkToken = async () => {
     } catch (err) {
       console.error(err);
     }
-  }  
+  }
   return response;
 };
 
@@ -52,23 +52,23 @@ const sendResetEmail = async (email) => {
   let response;
   try {
     response = await post('/users/sendResetEmail', { email });
-  } catch(err) {
-    console.error(err)
+  } catch (err) {
+    console.error(err);
   }
   return response;
-}
+};
 
 const resetPassword = async (password, uuid) => {
   let response;
   try {
     response = await put('/users/resetPassword', { password, uuid });
-  } catch(err) {
-    console.error(err)
+  } catch (err) {
+    console.error(err);
   }
   return response;
-}
+};
 
-const getUsers = async () => {  
+const getUsers = async () => {
   let response;
   if (localStorage.getItem('auth-token')) {
     try {
@@ -80,4 +80,6 @@ const getUsers = async () => {
   return response;
 };
 
-export { register, login, getUsers, checkToken, sendResetEmail, resetPassword };
+export {
+  register, login, getUsers, checkToken, sendResetEmail, resetPassword,
+};
